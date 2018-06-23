@@ -20,12 +20,11 @@ public class HealthController : MonoBehaviour {
         if (Health == 0)
         {
             gameObject.BroadcastMessage("OnDead");
-
+            EventManager.UnitDead.Invoke(this);
         }
     }
-
     
-        // Use this for initialization
+    // Use this for initialization
     void Start () {
 		
 	}

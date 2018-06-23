@@ -29,6 +29,11 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    public Vector2 Origin;
+
+    public float XScale;
+    public float YScale;
+
     private void Init()
     {
         
@@ -44,6 +49,35 @@ public class GameManager : MonoBehaviour {
         }
 
         return true;
+    }
+
+    public Vector2 World2Grid(Vector2 world)
+    {
+        var offset = world - Origin;
+
+        Debug.Log("Offset " + offset);
+
+        var scale = offset;
+        scale.x = scale.x / XScale;
+        scale.y = scale.y / YScale;
+
+        Debug.Log("Scale " + scale);
+
+        scale.x = Mathf.Round(scale.x);
+        scale.y = Mathf.Round(scale.y);
+
+        return scale;
+    }
+
+    public Vector2 Grid2World(Vector2 grid)
+    {
+        var scale = new Vector2();
+        scale.x = grid.x * XScale;
+        scale.y = grid.y * YScale;
+
+        var offset = scale + Origin;
+
+        return offset;
     }
 
     // Use this for initialization

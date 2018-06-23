@@ -25,7 +25,7 @@ public class MovementController : MonoBehaviour, IAction {
         target = t;
     }
 
-    public bool CanDoAction()
+    private bool ActionValidate()
     {
         if (target == null)
         {
@@ -42,12 +42,17 @@ public class MovementController : MonoBehaviour, IAction {
             return false;
         }
 
-        return apController.CanDoAction(this);
+        return true;
+    }
+
+    public bool CanDoAction()
+    {
+        return ActionValidate() && apController.CanDoAction(this);
     }
 
     public bool TryDoAction()
     {
-        if (CanDoAction())
+        if (ActionValidate() && apController.TrySpendAP(this))
         {
             gridController.GridPosition = target.Value;
             target = null;

@@ -52,14 +52,28 @@ public class ActionPointsController : MonoBehaviour {
         EventManager.TurnStart.AddListener(TurnStartListener);
     }
 
+    private void OnApplicationQuit()
+    {
+        if (EventManager.Instance)
+        {
+            EventManager.TurnStart.RemoveListener(TurnStartListener);
+        }
+    }
+
     private void OnDisable()
     {
-        EventManager.TurnStart.RemoveListener(TurnStartListener);
+        if (EventManager.Instance)
+        {
+            EventManager.TurnStart.RemoveListener(TurnStartListener);
+        }
     }
 
     private void OnDestroy()
     {
-        EventManager.TurnStart.RemoveListener(TurnStartListener);
+        if (EventManager.Instance)
+        {
+            EventManager.TurnStart.RemoveListener(TurnStartListener);
+        }
     }
 
     private void OnTurnStart(TurnStartParameters parameters)

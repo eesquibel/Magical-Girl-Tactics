@@ -21,7 +21,7 @@ public class AttackController : MonoBehaviour, IAction {
         }
     }
 
-    public bool CanDoAction()
+    private bool ActionValidate()
     {
         if (Attack == null)
         {
@@ -47,7 +47,12 @@ public class AttackController : MonoBehaviour, IAction {
             return false;
         }
 
-        return apController.CanDoAction(this);
+        return true;
+    }
+
+    public bool CanDoAction()
+    {
+        return ActionValidate() && apController.CanDoAction(this);
     }
 
     public void SetTarget(HealthController t)
@@ -68,7 +73,7 @@ public class AttackController : MonoBehaviour, IAction {
 
     public bool TryDoAction()
     {
-        if (CanDoAction())
+        if (ActionValidate() && apController.TrySpendAP(this))
         {
             float hit = Random.Range(0f, 1f);
             if (hit < Attack.HitChange)

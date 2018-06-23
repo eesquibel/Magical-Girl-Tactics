@@ -10,11 +10,13 @@ public class EventManager : MonoBehaviour
 
     private Dictionary<string, UnityEvent> eventDictionary;
 
-    public static TurnStartEvent TurnStart;
+    private TurnStartEvent turnStart;
 
-    public static UnitDeadEvent UnitDeadEvent;
+    private UnitDeadEvent unitDead;
 
     private static EventManager eventManager;
+
+    private static bool _hasInit = false;
 
     public static EventManager Instance
     {
@@ -26,7 +28,10 @@ public class EventManager : MonoBehaviour
 
                 if (!eventManager)
                 {
-                    Debug.LogError("There needs to be one active EventManger script on a GameObject in your scene.");
+                    if (_hasInit == false)
+                    {
+                        Debug.LogError("There needs to be one active EventManger script on a GameObject in your scene.");
+                    }
                 }
                 else
                 {
@@ -38,8 +43,26 @@ public class EventManager : MonoBehaviour
         }
     }
 
+    public static TurnStartEvent TurnStart
+    {
+        get
+        {
+            return Instance.turnStart;
+        }
+    }
+
+    public static UnitDeadEvent UnitDead
+    {
+        get
+        {
+            return Instance.unitDead;
+        }
+    }
+
     void Init()
     {
+        _hasInit = true;
+
         if (eventDictionary == null)
         {
             eventDictionary = new Dictionary<string, UnityEvent>();
@@ -47,13 +70,18 @@ public class EventManager : MonoBehaviour
 
         if (TurnStart == null)
         {
-            TurnStart = new TurnStartEvent();
+            turnStart = new TurnStartEvent();
         }
 
-        if (UnitDeadEvent == null)
+        if (unitDead == null)
         {
-            UnitDeadEvent = new UnitDeadEvent();
+            unitDead = new UnitDeadEvent();
         }
+    }
+
+    private void OnEnable()
+    {
+        DontDestroyOnLoad(this);
     }
 
     public static void StartListening(string eventName, UnityAction listener)

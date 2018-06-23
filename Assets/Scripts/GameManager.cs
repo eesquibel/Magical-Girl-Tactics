@@ -53,29 +53,40 @@ public class GameManager : MonoBehaviour {
 
     public Vector2 World2Grid(Vector2 world)
     {
-        var offset = world - Origin;
-
-        Debug.Log("Offset " + offset);
-
+        var offset = world - Origin + new Vector2(-XScale / 2, YScale / 2);
+        
         var scale = offset;
-        scale.x = scale.x / XScale;
         scale.y = scale.y / YScale;
 
-        Debug.Log("Scale " + scale);
+        // Debug.Log("World " + world + ", Offset " + offset + ", Scale " + scale);
 
-        scale.x = Mathf.Round(scale.x);
-        scale.y = Mathf.Round(scale.y);
+        var grid = new Vector2
+        {
+            y = Mathf.Round(scale.y)
+        };
 
-        return scale;
+        var xIncline = (offset.y - (grid.y * YScale) + YScale / 2) / YScale;
+
+        var rowXOffset = (grid.y % 2) * (XScale / 2);
+
+        scale.x = (scale.x + rowXOffset) / XScale;
+
+        grid.x = Mathf.Round(scale.x + Mathf.Lerp(0, XScale, xIncline));
+        
+        return grid;
     }
 
     public Vector2 Grid2World(Vector2 grid)
     {
-        var scale = new Vector2();
-        scale.x = grid.x * XScale;
-        scale.y = grid.y * YScale;
+        var scale = new Vector2
+        {
+            x = grid.x * XScale,
+            y = grid.y * YScale
+        };
 
-        var offset = scale + Origin;
+        var rowXOffset = new Vector2((grid.y % 2) * (XScale / 2), 0);
+
+        var offset = scale + Origin - rowXOffset;
 
         return offset;
     }

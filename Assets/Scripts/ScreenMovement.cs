@@ -17,6 +17,7 @@ public class ScreenMovement : MonoBehaviour {
 		if (last != grid.GridPosition)
         {
             gameObject.transform.position = GameManager.Instance.Grid2World(grid.GridPosition);
+            last = grid.GridPosition;
         }
 	}
 }

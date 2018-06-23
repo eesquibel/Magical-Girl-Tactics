@@ -18,6 +18,15 @@ public class DebugController : MonoBehaviour {
         }
     }
 
+    public void Exit()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+         Application.Quit();
+#endif
+    }
+
     // Use this for initialization
     void Start () {
 		
@@ -36,9 +45,9 @@ public class DebugController : MonoBehaviour {
                 DoMoveCubie(grid);
             }
 
-            Debug.Log("World " + grid);
+            // Debug.Log("World " + grid);
         }
-	}
+    }
 
     void DoMoveCubie(Vector2 target)
     {

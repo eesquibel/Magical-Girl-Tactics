@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour {
 
     private static GameManager gameManager;
 
+    private static bool _hasInit;
+
     public static GameManager Instance
     {
         get
@@ -17,7 +19,10 @@ public class GameManager : MonoBehaviour {
 
                 if (!gameManager)
                 {
-                    Debug.LogError("There needs to be one active GameManager script on a GameObject in your scene.");
+                    if (!_hasInit)
+                    {
+                        Debug.LogError("There needs to be one active GameManager script on a GameObject in your scene.");
+                    }
                 }
                 else
                 {
@@ -34,9 +39,12 @@ public class GameManager : MonoBehaviour {
     public float XScale;
     public float YScale;
 
+    private List<GridController> gridGameObjects;
+
     private void Init()
     {
-        
+        _hasInit = true;
+        gridGameObjects = new List<GridController>();
     }
 
     public static bool GridIsEmpty(Vector2 position, bool checkBlockMovement = false)
@@ -67,7 +75,7 @@ public class GameManager : MonoBehaviour {
 
         var xIncline = (offset.y - (grid.y * YScale) + YScale / 2) / YScale;
 
-        var rowXOffset = (grid.y % 2) * (XScale / 2);
+        var rowXOffset = (grid.y * (XScale / 2));
 
         scale.x = (scale.x + rowXOffset) / XScale;
 
@@ -84,11 +92,28 @@ public class GameManager : MonoBehaviour {
             y = grid.y * YScale
         };
 
-        var rowXOffset = new Vector2((grid.y % 2) * (XScale / 2), 0);
-
+        var rowXOffset = new Vector2((grid.y) * (XScale / 2), 0);
         var offset = scale + Origin - rowXOffset;
 
         return offset;
+    }
+
+    public void RegisterGridObject(GridController gridController)
+    {
+        gridGameObjects.Add(gridController);
+    }
+
+    public void DeregisterGridObject(GridController gridController)
+    {
+        if (gridGameObjects.Contains(gridController))
+        {
+            gridGameObjects.Remove(gridController);
+        }
+    }
+
+    public GridController GetObjectAtGrid(Vector2 grid)
+    {
+        return gridGameObjects.Where(gridController => gridController.GridPosition == grid).FirstOrDefault();
     }
 
     // Use this for initialization

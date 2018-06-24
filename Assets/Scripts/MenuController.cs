@@ -6,6 +6,7 @@ using UnityStandardAssets.Cameras;
 public class MenuController : MonoBehaviour {
 
 	public GameObject MenuCanvas;
+    public GameObject GridDisplay;
 
     private UnitController currentUnit;
     private float inputWait = 0.0f;
@@ -34,6 +35,7 @@ public class MenuController : MonoBehaviour {
         {
             selectingMovement = true;
             HideMenu();
+            GridDisplay.SetActive(true);
             inputWait = Time.time + 0.1f;
         }
     }
@@ -46,11 +48,6 @@ public class MenuController : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-        if (currentUnit == null)
-        {
-            return;
-        }
-
         if(MenuCanvas.activeSelf)
         {
             var rt = MenuCanvas.GetComponent<RectTransform>();
@@ -58,18 +55,23 @@ public class MenuController : MonoBehaviour {
             MenuCanvas.transform.position = Camera.main.WorldToScreenPoint(menuPoint);
             return;
         }
+    }
 
+    private void FixedUpdate()
+    {
         if(Time.time < inputWait)
         {
             return;
         }
 
-        if(selectingMovement && Input.GetMouseButtonDown(0))
+        if (selectingMovement && Input.GetMouseButtonDown(0))
         {
             var point = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
             var grid = GameManager.Instance.World2Grid(point);
             currentUnit.Move(grid);
+            GridDisplay.SetActive(false);
             selectingMovement = false;
         }
+
     }
 }

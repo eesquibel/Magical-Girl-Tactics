@@ -7,11 +7,7 @@ public class CameraController : MonoBehaviour {
 
     public float moveSpeed = 1;
 
-    public Vector2 clampViewportMin;
-    
-    public Vector2 clampViewportMax;
-
-    private void LateUpdate()
+    private void FixedUpdate()
     {
         Vector3 target = Vector3.zero;
 
@@ -39,7 +35,7 @@ public class CameraController : MonoBehaviour {
                 x = Mathf.InverseLerp(0, Screen.width, position.x),
                 y = Mathf.InverseLerp(0, Screen.height, position.y)
             };
-            
+
             // Check Dead Zone
             if (normalized.x > .01f && normalized.x < .99f && normalized.y > .01f && normalized.y < .99f)
             {
@@ -51,9 +47,6 @@ public class CameraController : MonoBehaviour {
         }
 
         var smoothTarget = Vector3.Lerp(transform.position, target, Time.deltaTime * moveSpeed);
-        smoothTarget.x = Mathf.Clamp(smoothTarget.x, clampViewportMin.x, clampViewportMax.x);
-        smoothTarget.y = Mathf.Clamp(smoothTarget.y, clampViewportMin.y, clampViewportMax.y);
-
         transform.position = smoothTarget;
     }
 }

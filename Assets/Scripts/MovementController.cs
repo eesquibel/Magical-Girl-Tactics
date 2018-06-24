@@ -16,6 +16,11 @@ public class MovementController : MonoBehaviour, IAction {
     {
         get
         {
+            if (target != null)
+            {
+                return MovementActionPointCost * Distance();
+            }
+
             return MovementActionPointCost;
         }
     }
@@ -42,12 +47,19 @@ public class MovementController : MonoBehaviour, IAction {
             return false;
         }
 
+        Debug.Log("Distance " + Distance());
+
         return true;
     }
 
     public bool CanDoAction()
     {
         return ActionValidate() && apController.CanDoAction(this);
+    }
+
+    private int Distance()
+    {
+        return (int)Mathf.Abs(target.Value.x - gridController.GridPosition.x) + (int)Mathf.Abs(target.Value.y - gridController.GridPosition.y);
     }
 
     public bool TryDoAction()

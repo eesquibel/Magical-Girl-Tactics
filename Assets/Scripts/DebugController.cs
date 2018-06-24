@@ -5,6 +5,7 @@ using UnityEngine;
 public class DebugController : MonoBehaviour {
 
     private bool movingCubie;
+    private bool cubieAttacking;
 
     public GameObject Cubie;
 
@@ -16,6 +17,11 @@ public class DebugController : MonoBehaviour {
         {
             
         }
+    }
+
+    public void CubieAttack()
+    {
+        cubieAttacking = true;
     }
 
     public void Exit()
@@ -39,12 +45,17 @@ public class DebugController : MonoBehaviour {
         {
             var point = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
             var grid = GameManager.Instance.World2Grid(point);
+            var target = GameManager.Instance.GetObjectAtGrid(grid);
 
             if (movingCubie)
             {
                 DoMoveCubie(grid);
             }
 
+            if (cubieAttacking)
+            {
+                DoCubieAttack(target);
+            }
             // Debug.Log("World " + grid);
         }
     }
@@ -52,6 +63,20 @@ public class DebugController : MonoBehaviour {
     void DoMoveCubie(Vector2 target)
     {
         movingCubie = false;
-        Cubie.GetComponent<CharacterController>().Move(target);
+        Cubie.GetComponent<UnitController>().Move(target);
+    }
+
+    void DoCubieAttack(GridController target)
+    {
+        cubieAttacking = false;
+
+        if (target)
+        {
+            var healthController = target.GetComponent<HealthController>();
+            var attacks = Cubie.GetComponent<AttackController>().AvailableAttacks;
+            int i = Random.Range(0, attacks.Length);
+
+            Cubie.GetComponent<UnitController>().Attack(healthController, attacks[i]);
+        }
     }
 }

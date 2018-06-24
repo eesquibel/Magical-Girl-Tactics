@@ -124,7 +124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19123084652712b45b52d4fee4539391, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MenuOffset: {x: 0, y: 0}
+  MenuOffset: {x: 0.1, y: 0.1}
 --- !u!114 &114310096410441344
 MonoBehaviour:
   m_ObjectHideFlags: 1

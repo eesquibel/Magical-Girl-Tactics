@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class UnitController : MonoBehaviour {
 
+    public Vector2 MenuOffset;
+
     private MovementController movement;
     private AttackController attackController;
 
@@ -29,9 +31,7 @@ public class UnitController : MonoBehaviour {
 
     void OnMouseDown()
     {
-        GameManager gm = GameManager.Instance;
-        MenuController mc = gm.gameObject.GetComponent<MenuController>();
-        mc.MenuCanvas.SetActive(true);
+        GameManager.Instance.gameObject.GetComponent<MenuController>().ActivateMenuOnUnit(this);
     }
 
     // Update is called once per frame

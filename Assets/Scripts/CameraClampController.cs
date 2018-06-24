@@ -17,13 +17,40 @@ public class CameraClampController : MonoBehaviour {
         myCamera = GetComponentInChildren<Camera>();
         autoCam = GetComponent<AutoCam>();
         cameraController = GetComponent<CameraController>();
+
+        checkSize();
     }
 
-    void LateUpdate () {
+    private void checkSize()
+    {
+        var bottomLeft = myCamera.ScreenToWorldPoint(Vector3.zero);
+        var topRight = myCamera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
+
+        checkSize(bottomLeft, topRight);
+    }
+
+    private void checkSize(Vector3 bottomLeft, Vector3 topRight)
+    {
+        var world = clampWorldPointMax - clampWorldPointMin;
+        var screen = topRight - bottomLeft;
+
+        // Screen is bigger than the world, give up
+        if (screen.x > world.x || screen.y > world.y)
+        {
+            enabled = false;
+            return;
+        }
+    }
+
+    void Update () {
         if (myCamera)
         {
             var bottomLeft = myCamera.ScreenToWorldPoint(Vector3.zero);
             var topRight = myCamera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
+
+#if UNITY_EDITOR
+            checkSize(bottomLeft, topRight);
+#endif
 
             var offset = new Vector3();
 

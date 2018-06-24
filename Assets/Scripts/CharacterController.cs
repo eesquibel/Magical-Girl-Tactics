@@ -18,6 +18,13 @@ public class CharacterController : MonoBehaviour {
         return movement.TryDoAction();
     }
 
+	void OnMouseDown()
+	{
+		GameManager gm = GameManager.Instance;
+		MenuController mc = gm.gameObject.GetComponent<MenuController>();
+		mc.MenuCanvas.SetActive(true);
+	}
+
 	// Update is called once per frame
 	void Update () {
 		

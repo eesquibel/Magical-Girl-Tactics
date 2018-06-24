@@ -5,9 +5,10 @@ using UnityStandardAssets.Cameras;
 
 public class MenuController : MonoBehaviour {
 
-	public GameObject MenuCanvas;
+	public GameObject UnitMenu;
     public GameObject GridDisplay;
 
+    private GameObject activeMenu;
     private UnitController currentUnit;
     private float inputWait = 0.0f;
     private bool selectingMovement = false;
@@ -19,14 +20,14 @@ public class MenuController : MonoBehaviour {
         AutoCam ac = Camera.main.GetComponentInParent<AutoCam>();
         ac.enabled = true;
         ac.SetTarget(unit.transform);
-        MenuCanvas.SetActive(true);
+        activeMenu.SetActive(true);
     }
 
     public void HideMenu()
     {
         Camera.main.GetComponentInParent<AutoCam>().enabled = false;
         Camera.main.GetComponentInParent<CameraController>().enabled = true;
-        MenuCanvas.SetActive(false);
+        activeMenu.SetActive(false);
     }
 
     public void MoveCurrentUnit()
@@ -40,31 +41,36 @@ public class MenuController : MonoBehaviour {
         }
     }
 
-	// Use this for initialization
-	void Start () {
-		
+	void Start ()
+    {
+        activeMenu = Instantiate<GameObject>(UnitMenu);
+        activeMenu.SetActive(false);
+        activeMenu.transform.SetParent(GetComponentInChildren<Canvas>().transform);
+        //var mainCanvas = GameObject.FindGameObjectWithTag("MainCanvas");
+        //if(mainCanvas != null)
+        //{
+        //    activeMenu.transform.SetParent(mainCanvas.transform);
+        //}
 	}
-	
-	// Update is called once per frame
-	void Update ()
-	{
-        if(MenuCanvas.activeSelf)
+
+    void Update()
+    {
+        if (activeMenu.activeSelf)
         {
-            var rt = MenuCanvas.GetComponent<RectTransform>();
             var menuPoint = currentUnit.transform.position + (Vector3)currentUnit.MenuOffset;
-            MenuCanvas.transform.position = Camera.main.WorldToScreenPoint(menuPoint);
+            activeMenu.transform.position = Camera.main.WorldToScreenPoint(menuPoint);
             return;
         }
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
-        if(Time.time < inputWait)
+        if (Time.time < inputWait)
         {
             return;
         }
 
-        if (selectingMovement && Input.GetMouseButtonDown(0))
+        if(selectingMovement && Input.GetMouseButtonDown(0))
         {
             var point = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
             var grid = GameManager.Instance.World2Grid(point);
@@ -72,6 +78,5 @@ public class MenuController : MonoBehaviour {
             GridDisplay.SetActive(false);
             selectingMovement = false;
         }
-
     }
 }
